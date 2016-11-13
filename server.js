@@ -12,7 +12,12 @@ server.get("/", function(req,res) {
 server.get('/api/v1/service', function (req, res) {
     
     var food = req.query.food;
-    mongo.find("food", {"tag" : food}, {}, function (err, food) {
+    
+    if (!Array.isArray(food)) {
+        food = [food];
+    }
+    
+    mongo.find("food", {"tag" : { $in : food } }, {"food" : 1}, function (err, food) {
     
         if (err) {
             res.send(500, "ERROR: getActivityV1 : getActivities : DB ERROR");
